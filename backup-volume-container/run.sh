@@ -32,7 +32,7 @@ cd /var/backup
 # start by restoring the last backup:
 # This could fail if there's nothing to restore.
 
-duplicity --no-encryption $1 .
+duplicity --no-encryption --s3-use-new-style $1 .
 
 # Now, start waiting for file system events on this path.
 # After an event, wait for a quiet period of N seconds before doing a backup
@@ -44,8 +44,8 @@ while inotifywait -r -e $inotifywait_events . ; do
   done
   
   echo "starting backup"
-  duplicity --no-encryption --allow-source-mismatch --full-if-older-than 7D . $1
+  duplicity --no-encryption --s3-use-new-style --allow-source-mismatch --full-if-older-than 7D . $1
   echo "starting cleanup"
-  duplicity remove-all-but-n-full 3 --force --no-encryption --allow-source-mismatch $1  
-  duplicity cleanup --force --no-encryption $1
+  duplicity remove-all-but-n-full 3 --force --no-encryption --s3-use-new-style --allow-source-mismatch $1  
+  duplicity cleanup --force --no-encryption --s3-use-new-style $1
 done
